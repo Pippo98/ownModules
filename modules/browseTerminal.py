@@ -1,7 +1,6 @@
 import os
 from termcolor import colored
 import sys
-import curses
 import time
 import getch
 

@@ -441,7 +441,6 @@ class Parser:
             self.gps.convert_longitude()
 
             modified = True
-            pass
 
         if("GLL" in type):
 
@@ -456,7 +455,6 @@ class Parser:
             self.gps.convert_longitude()
 
             modified = True
-            pass
 
         if("RMC" in type):
 
@@ -474,7 +472,6 @@ class Parser:
             self.gps.convert_longitude()
 
             modified = True
-            pass
 
         return modified
 
