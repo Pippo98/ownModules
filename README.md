@@ -29,4 +29,4 @@ If some of these modules are modified, to make the changes global rerun *sync.sh
 >import sys
 >print(sys.path)
 >~~~
->The printed list contains all the current paths that python use to >find modules, find a similar path to the one above, replace it in the >***sync.sh** script and rerun it.
+>The printed list contains all the current paths that python use to find modules, find a similar path to the one above, replace it in the ***sync.sh** script and rerun it.
