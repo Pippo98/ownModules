@@ -4,25 +4,26 @@ import DeviceClasses
 
 class Parser:
 
-    a = DeviceClasses.Accel_Gyro()
-    g = DeviceClasses.Accel_Gyro()
-    a2 = DeviceClasses.Accel_Gyro()
-    g2 = DeviceClasses.Accel_Gyro()
-    speed = DeviceClasses.Speed()
-    steer = DeviceClasses.Steer()
-    pedals = DeviceClasses.Pedals()
-    ecu = DeviceClasses.ECU()
-    steeringWheel = DeviceClasses.SteeringWheel()
-    cmds = DeviceClasses.Commands()
-    invl = DeviceClasses.Inverter()
-    invr = DeviceClasses.Inverter()
-    bmsLV = DeviceClasses.BMS()
-    bmsHV = DeviceClasses.BMS()
-    gps = DeviceClasses.GPS()
-
-    sensors = []
-
     def __init__(self):
+
+        self.a = DeviceClasses.Accel_Gyro()
+        self.g = DeviceClasses.Accel_Gyro()
+        self.a2 = DeviceClasses.Accel_Gyro()
+        self.g2 = DeviceClasses.Accel_Gyro()
+        self.speed = DeviceClasses.Speed()
+        self.steer = DeviceClasses.Steer()
+        self.pedals = DeviceClasses.Pedals()
+        self.ecu = DeviceClasses.ECU()
+        self.steeringWheel = DeviceClasses.SteeringWheel()
+        self.cmds = DeviceClasses.Commands()
+        self.invl = DeviceClasses.Inverter()
+        self.invr = DeviceClasses.Inverter()
+        self.bmsLV = DeviceClasses.BMS()
+        self.bmsHV = DeviceClasses.BMS()
+        self.gps = DeviceClasses.GPS()
+
+        self.sensors = []
+
         self.cmds.time = time.time()
 
         self.a.type = "Accel"
@@ -94,9 +95,9 @@ class Parser:
             if(self.a2.z > 32768):
                 self.a2.z -= 65536
 
-            self.a2.x *= (self.a2.scale/65536)*100
-            self.a2.y *= (self.a2.scale/65536)*100
-            self.a2.z *= (self.a2.scale/65536)*100
+            self.a2.x /= 100
+            self.a2.y /= 100
+            self.a2.z /= 100
 
             self.a2.x = round(self.a2.x, 2)
             self.a2.y = round(self.a2.y, 2)
@@ -119,9 +120,9 @@ class Parser:
             if(self.g2.z > 32768):
                 self.g2.z -= 65536
 
-            self.g2.x *= (self.g2.scale/65536)
-            self.g2.y *= (self.g2.scale/65536)
-            self.g2.z *= (self.g2.scale/65536)
+            self.g2.x /= 100
+            self.g2.y /= 100
+            self.g2.z /= 100
 
             self.g2.x = round(self.g2.x, 2)
             self.g2.y = round(self.g2.y, 2)
@@ -269,7 +270,7 @@ class Parser:
                 modifiedSensors.append(self.bmsHV.type)
 
             if(msg[0] == 0xA0):
-                self.bmsHV.temp = (msg[1] * 256 + msg[2]) / 10
+                self.bmsHV.temperature = (msg[1] * 256 + msg[2]) / 10
 
                 self.bmsHV.time = timestamp
                 self.bmsHV.count += 1
@@ -295,7 +296,7 @@ class Parser:
 
         if(id == 0xFF):
             self.bmsLV.voltage = msg[0]/10
-            self.bmsLV.temp = msg[2]/5
+            self.bmsLV.temperature = msg[2]/5
             self.bmsLV.count += 1
             self.bmsLV.time = timestamp
             modifiedSensors.append(self.bmsLV.type)
@@ -304,9 +305,12 @@ class Parser:
         if(id == 0x181):
             if(msg[0] == 0xA0):
                 self.invl.torque = (msg[2] * 256 + msg[1])
+                if(self.invl.torque > 32768):
+                    self.invl.torque -= 65536
                 self.invl.time = timestamp
             if(msg[0] == 0x4A):
-                self.invl.temp = (msg[2] * 256 + msg[1] - 15797) / 112.1182
+                self.invl.temperature = (
+                    msg[2] * 256 + msg[1] - 15797) / 112.1182
                 self.invl.time = timestamp
             if(msg[0] == 0x49):
                 self.invl.motorTemp = (msg[2] * 256 + msg[1] - 9393.9) / 55.1
@@ -317,11 +321,6 @@ class Parser:
                     self.invl.speed -= 65536
                 self.invl.time = timestamp
 
-            self.invl.torque = round(self.invl.torque, 3)
-            self.invl.temp = round(self.invl.temp, 3)
-            self.invl.motorTemp = round(self.invl.motorTemp, 3)
-            self.invl.speed = round(self.invl.speed, 3)
-
             self.invl.count += 1
             modifiedSensors.append(self.invl.type)
 
@@ -329,9 +328,12 @@ class Parser:
         if(id == 0x182):
             if(msg[0] == 0xA0):
                 self.invr.torque = (msg[2] * 256 + msg[1])
+                if(self.invr.torque > 32768):
+                    self.invr.torque -= 65536
                 self.invr.time = timestamp
             if(msg[0] == 0x4A):
-                self.invr.temp = (msg[2] * 256 + msg[1] - 15797) / 112.1182
+                self.invr.temperature = (
+                    msg[2] * 256 + msg[1] - 15797) / 112.1182
                 self.invr.time = timestamp
             if(msg[0] == 0x49):
                 self.invr.motorTemp = (msg[2] * 256 + msg[1] - 9393.9) / 55.1
@@ -341,20 +343,9 @@ class Parser:
                 if(self.invr.speed > 32768):
                     self.invr.speed -= 65536
                 self.invr.time = timestamp
-                '''
-                self.invr.speed = (msg[2] * 256 + msg[1])
-                if(self.invr.speed > 32768):
-                    self.invr.speed -= 65536
-                self.invr.speed = ((self.invr.speed/(60))*0.395)*3.6
-                '''
-
-            self.invr.torque = round(self.invr.torque, 3)
-            self.invr.temp = round(self.invr.temp, 3)
-            self.invr.motorTemp = round(self.invr.motorTemp, 3)
-            self.invr.speed = round(self.invr.speed, 3)
-            modifiedSensors.append(self.invr.type)
 
             self.invr.count += 1
+            modifiedSensors.append(self.invr.type)
 
         return modifiedSensors
 

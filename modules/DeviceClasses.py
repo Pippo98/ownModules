@@ -1,20 +1,19 @@
-class Accel_Gyro:
+class Accel_Gyro(object):
 
     type = "Accel Gyro"
-    x = 0
-    y = 0
-    z = 0
-    scale = 0
+
     time = 0
     count = 0
     file_ = ""
     file_2 = ""
-
     jsonList = []
     messageList = []
 
     def __init__(self):
-        pass
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.scale = 0
 
     def get_obj(self):
         obj = [
@@ -75,10 +74,10 @@ class Speed:
             self.frequency,
         ]
         names = [
-            "left",
-            "right",
-            "Rad/s Left",
-            "Rad/s Right",
+            "l_kmh",
+            "r_kmh",
+            "l_rads",
+            "r_rads",
             "angle0",
             "angle1",
             "delta",
@@ -88,10 +87,10 @@ class Speed:
 
     def get_dict(self):
         _dict = {
-            "left": self.l_kmh,
-            "right": self.r_kmh,
-            "Rad/s Left": self.l_rads,
-            "Rad/s Right": self.r_rads,
+            "l_kmh": self.l_kmh,
+            "r_kmh": self.r_kmh,
+            "l_rads": self.l_rads,
+            "r_rads": self.r_rads,
             "angle0": self.angle0,
             "angle1": self.angle1,
             "delta": self.delta,
@@ -280,7 +279,7 @@ class Commands:
 
     def get_dict(self):
         _dict = {
-            "commands": self.active_commands
+            "active_commands": self.active_commands
         }
 
         return _dict
@@ -289,7 +288,7 @@ class Commands:
 class Inverter:
     type = "Inverter"
 
-    temp = 0
+    temperature = 0
     motorTemp = 0
     torque = 0
     speed = 0
@@ -308,7 +307,7 @@ class Inverter:
 
     def get_obj(self):
         obj = [
-            self.temp,
+            self.temperature,
             self.motorTemp,
             self.torque,
             self.speed,
@@ -316,9 +315,9 @@ class Inverter:
         ]
         names = [
             "temperature",
-            "Motor Temperature",
-            "Torque",
-            "Speed",
+            "motorTemp",
+            "torque",
+            "speed",
             "state",
         ]
 
@@ -326,10 +325,10 @@ class Inverter:
 
     def get_dict(self):
         _dict = {
-            "temperature": self.temp,
-            "Motor Temperature": self.motorTemp,
-            "Torque": self.torque,
-            "Speed": self.speed,
+            "temperature": self.temperature,
+            "motorTemp": self.motorTemp,
+            "torque": self.torque,
+            "speed": self.speed,
             "state": self.state,
         }
         return _dict
@@ -338,7 +337,7 @@ class Inverter:
 class BMS:
     type = "BMS"
 
-    temp = 0
+    temperature = 0
     voltage = 0
     current = 0
 
@@ -355,14 +354,14 @@ class BMS:
 
     def get_obj(self):
         obj = [
-            self.temp,
+            self.temperature,
             self.voltage,
             self.current,
         ]
         names = [
-            "Temperature",
-            "Voltage",
-            "Current",
+            "temperature",
+            "voltage",
+            "current",
         ]
 
         return obj, names
@@ -370,9 +369,9 @@ class BMS:
     def get_dict(self):
         _dict = {
 
-            "Temperature": self.temp,
-            "Voltage": self.voltage,
-            "Current": self.current,
+            "temperature": self.temperature,
+            "voltage": self.voltage,
+            "current": self.current,
 
         }
         return _dict
