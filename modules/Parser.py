@@ -207,7 +207,7 @@ class Parser:
             # ECU bms on request
             if(msg[0] == 0x0A):
                 self.cmds.active_commands.append(
-                    ("ECU BMS ON request", time.time())
+                    ("ECU BMS ON request", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
 
@@ -222,17 +222,17 @@ class Parser:
                     self.ecu.map = msg[1]
             if(msg[0] == 0x03):
                 self.cmds.active_commands.append(
-                    ("Steering Setup request", time.time())
+                    ("Steering Setup request", timestamp)
                 )
 
             if(msg[0] == 0x04):
                 self.cmds.active_commands.append(
-                    ("Steering Stop request", time.time())
+                    ("Steering Stop request", timestamp)
                 )
 
             if(msg[0] == 0x05):
                 self.cmds.active_commands.append(
-                    ("Steering RUN request", time.time())
+                    ("Steering RUN request", timestamp)
                 )
                 if(msg[1] == 0xEC):
                     self.ecu.map = -20
@@ -246,14 +246,14 @@ class Parser:
         if(id == 0x201):
             if(msg[0] == 0x51 and msg[1] == 0x08):
                 self.cmds.active_commands.append(
-                    ("Inverter L ON", time.time())
+                    ("Inverter L ON", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
 
         if(id == 0x202):
             if(msg[0] == 0x51 and msg[1] == 0x08):
                 self.cmds.active_commands.append(
-                    ("Inverter R ON", time.time())
+                    ("Inverter R ON", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
 
@@ -278,17 +278,17 @@ class Parser:
 
             if(msg[0] == 0x03):
                 self.cmds.active_commands.append(
-                    ("BMS is ON", time.time())
+                    ("BMS is ON", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
             if(msg[0] == 0x04):
                 self.cmds.active_commands.append(
-                    ("BMS is OFF", time.time())
+                    ("BMS is OFF", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
             if(msg[0] == 0x08):
                 self.cmds.active_commands.append(
-                    ("BMS is OFF", time.time())
+                    ("BMS is OFF", timestamp)
                 )
                 modifiedSensors.append(self.cmds.type)
 
