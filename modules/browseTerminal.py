@@ -1,12 +1,16 @@
 import os
-from termcolor import colored
 import sys
 import time
 import getch
+import signal
+from termcolor import colored
 
 
 class terminalBrowser:
     def __init__(self, fileType=None, startPath="/"):
+
+        signal.signal(signal.SIGINT, self.quit)
+
         self.fileType = fileType
         self.currentPath = startPath
         self.currentIndex = 0
@@ -20,7 +24,18 @@ class terminalBrowser:
         paths = startPath.split("/")
         self.previousFolders = " ".join(paths).split()
 
+        self.help = ["To browse in files use WASD: W and S to move up and down, A and D to move in and out of folders",
+                     "To select a file use D or SPACE_BAR",
+                     "To deselect a file press again D or SPACE_BAR",
+                     "Use Q to close"
+                     ""
+                     ]
+        print("\n")
+
         super().__init__()
+
+    def quit(self, signal, frame):
+        self.clearTerm()
 
     def list_and_sort(self, path):
         bff = os.listdir(path)
@@ -32,11 +47,10 @@ class terminalBrowser:
         return dirs
 
     def browse(self):
-        print("To browse in files use WASD: W and S to move up and down, A and D to move back and forward", end="\n\n")
 
         self.selected = False
         while self.selected == False:
-            jumTermClear = False
+            jumpTermClear = False
 
             try:
                 self.currentDirs = self.list_and_sort(self.currentPath)
@@ -47,9 +61,26 @@ class terminalBrowser:
                               "red", attrs=['blink']), end="\r")
             self.printDirs()
 
-            key = getch.getch()
+            try:
+                key = getch.getch()
+            except OverflowError as e:
+                self.quit("Pressed CTRL+C, quitting from browsing files", "")
+
+                return None
+            except Exception as e:
+                print(e)
+                print(e)
+                print(e)
+                print(e)
+                print(e)
+
+            if key == "q":
+                self.quit("Pressed Q, quitting from browsing files", "")
+                return None
+
             if key == "\n":
                 self.clearTerm()
+
                 if self.currentPath == "/":
                     return self.currentPath + self.selectedFile
                 else:
@@ -95,10 +126,11 @@ class terminalBrowser:
                 else:
                     self.currentFolder = None
 
-            if not jumTermClear:
+            if not jumpTermClear:
                 self.clearTerm()
 
     def printDirs(self):
+        self.printedLines = 0
         offset = 10
         lenExceed = False
 
@@ -127,8 +159,13 @@ class terminalBrowser:
 
             lenExceed = True
 
-        print(colored(self.currentPath, "white"))
-        self.printedLines += 1
+        for line in self.help:
+            printable = colored(line, "white")
+            print(printable)
+            self.printedLines += 1
+
+        print(colored("\n"+self.currentPath + "\n", "cyan"))
+        self.printedLines += 3
 
         for i, dir_ in enumerate(dirs):
             printable = colored(dir_, "white")
@@ -148,5 +185,5 @@ class terminalBrowser:
             self.printedLines += 1
 
     def clearTerm(self, offsetLines=1):
-        print(("\033[F" + " "*150) * (self.printedLines+1))
+        print(("\033[F" + " "*150) * (self.printedLines + offsetLines))
         self.printedLines = 0
