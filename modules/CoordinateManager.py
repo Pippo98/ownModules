@@ -44,6 +44,7 @@ class CoordinateManager():
         upLeft, bottomRight = self.checkConstraint(upLeft, bottomRight)
 
         self.rectangles[id] = {"ul": upLeft, "br": bottomRight}
+        return self.rectangles[id]
 
     def checkConstraint(self, upLeft, bottomRight):
         if not self.minX == None:
@@ -71,38 +72,68 @@ class CoordinateManager():
                 bottomRight = (bottomRight[0], self.maxY)
         return upLeft, bottomRight
 
+    def checkIfInRect(self, point):
+        ret = None
+        for key, el in self.rectangles.items():
+            x0, y0 = el["ul"]
+            x1, y1 = el["br"]
+
+            if point[0] > x0 and point[0] < x1:
+                if point[1] > y0 and point[1] < y1:
+                    return key
+
+        return ret
+
     def getRectangles(self):
         return self.rectangles
 
     def alignHoriziontal(self, alignment, width, upLeft, bottomRight):
-        if alignment == self.Alignment.LEFT_RIGHT:
-            bottomRight = (bottomRight[0] + width, bottomRight[1])
+        center = int(abs(upLeft[0] - bottomRight[0]) / 2) + upLeft[0]
+        _width = abs(upLeft[0] - bottomRight[0])
+
         if alignment == self.Alignment.LEFT_LEFT:
-            bottomRight = (upLeft[0], bottomRight[1])
-            upLeft = (upLeft[0] - width, upLeft[1])
+            upLeft = (upLeft[0] - _width, upLeft[1])
+            bottomRight = (bottomRight[0] - _width, bottomRight[1])
+
         if alignment == self.Alignment.RIGHT_RIGHT:
-            upLeft = (bottomRight[0], upLeft[1])
+            upLeft = (upLeft[0] + width, upLeft[1])
             bottomRight = (bottomRight[0] + width, bottomRight[1])
+
         if alignment == self.Alignment.RIGHT_LEFT:
-            upLeft = (upLeft[0] - width, upLeft[1])
+            upLeft = (upLeft[0] + (width - _width), upLeft[1])
+            bottomRight = (bottomRight[0] +
+                           (width - _width), bottomRight[1])
+        if alignment == self.Alignment.CENTER:
+            upLeft = (upLeft[0] + int((width - _width) / 2), upLeft[1])
+            bottomRight = (bottomRight[0] +
+                           int((width - _width) / 2), bottomRight[1])
 
         return upLeft, bottomRight
 
     def alignVertical(self, alignment, height, upLeft, bottomRight):
-        if alignment == self.Alignment.BOTTOM_TOP:
-            upLeft = (upLeft[0], upLeft[1] - height)
+        center = abs(upLeft[1] - bottomRight[1])
+        _height = abs(upLeft[1] - bottomRight[1])
+
         if alignment == self.Alignment.TOP_TOP:
-            bottomRight = (bottomRight[0], upLeft[1])
-            upLeft = (upLeft[0], upLeft[1] - height)
-        if alignment == self.Alignment.TOP_BOTTOM:
-            bottomRight = (bottomRight[0], bottomRight[1] + height)
+            upLeft = (upLeft[0], upLeft[1] - _height)
+            bottomRight = (bottomRight[0], bottomRight[1] - _height)
+
         if alignment == self.Alignment.BOTTOM_BOTTOM:
-            upLeft = (upLeft[0], bottomRight[1])
+            upLeft = (upLeft[0], upLeft[1] + height)
             bottomRight = (bottomRight[0], bottomRight[1] + height)
+
+        if alignment == self.Alignment.BOTTOM_TOP:
+            upLeft = (upLeft[0], upLeft[1] + (height - _height))
+            bottomRight = (bottomRight[0], bottomRight[1] + (height - _height))
+
+        if alignment == self.Alignment.CENTER:
+            upLeft = (upLeft[0], upLeft[1] + int((height - _height) / 2))
+            bottomRight = (
+                bottomRight[0], bottomRight[1] + int((height - _height) / 2))
 
         return upLeft, bottomRight
 
-    def addRelativeTo(self, id, newID, referenceType, alignmentType, width=None, height=None, padding=1):
+    def addRelativeTo(self, id, newID, referenceType, alignmentType, width=None, height=None, padding=1, offX=None, offY=None):
 
         referenceRectangle = None
         if(id in self.rectangles.keys()):
@@ -113,65 +144,112 @@ class CoordinateManager():
         if referenceRectangle == None:
             return None
 
-        upLeft = (0, 0)
-        bottomRight = (0, 0)
-
+        # Copying reference coordinates
         upLeft = referenceRectangle["ul"]
         bottomRight = referenceRectangle["br"]
-        _width = abs(upLeft[0] - bottomRight[0]) + padding
-        _height = abs(upLeft[1] - bottomRight[1]) + padding
+        # calculating original width and height
+        _width = abs(upLeft[0] - bottomRight[0])
+        _height = abs(upLeft[1] - bottomRight[1])
 
         ###### BOTTOM ######
         if(referenceType == self.Reference.BOTTOM):
+            # moving upper point at the BOTTOM of the reference rectangle
             upLeft = (upLeft[0], upLeft[1] + _height)
-            bottomRight = (bottomRight[0], bottomRight[1] + _height)
 
+            # calculating new height
             if not height == None:
-                bottomRight = (bottomRight[0], bottomRight[1] + height)
+                bottomRight = (bottomRight[0], upLeft[1] + height)
+            else:
+                bottomRight = (bottomRight[0], bottomRight[1] + _height)
 
             if not width == None:
-                upLeft, bottomRight = self.alignHoriziontal(
-                    alignmentType, width, upLeft, bottomRight)
+                bottomRight = (upLeft[0] + width, bottomRight[1])
+
+            upLeft, bottomRight = self.alignHoriziontal(
+                alignmentType, _width, upLeft, bottomRight)
+
+            upLeft = (upLeft[0], upLeft[1] + padding)
+            bottomRight = (bottomRight[0], bottomRight[1] + padding)
 
         ###### TOP ######
         if(referenceType == self.Reference.TOP):
 
+            # moving upper point at the BOTTOM of the reference rectangle
             upLeft = (upLeft[0], upLeft[1] - _height)
-            bottomRight = (bottomRight[0], bottomRight[1] - _height)
 
+            # calculating new height
             if not height == None:
-                upLeft = (upLeft[0], upLeft[1] - height)
+                bottomRight = (bottomRight[0], upLeft[1] - height)
+            else:
+                bottomRight = (bottomRight[0], bottomRight[1] - _height)
 
             if not width == None:
-                upLeft, bottomRight = self.alignHoriziontal(
-                    alignmentType, width, upLeft, bottomRight)
+                bottomRight = (upLeft[0] + width, bottomRight[1])
+
+            upLeft, bottomRight = self.alignHoriziontal(
+                alignmentType, _width, upLeft, bottomRight)
+
+            upLeft = (upLeft[0], upLeft[1] - padding)
+            bottomRight = (bottomRight[0], bottomRight[1] - padding)
 
         ###### RIGHT ######
         if(referenceType == self.Reference.RIGHT):
 
             upLeft = (upLeft[0] + _width, upLeft[1])
-            bottomRight = (bottomRight[0] + _width, bottomRight[1])
 
             if not width == None:
-                bottomRight = (bottomRight[0] + width, bottomRight[1])
+                bottomRight = (upLeft[0] + width, bottomRight[1])
+            else:
+                bottomRight = (upLeft[0] + _width, bottomRight[1])
 
             if not height == None:
-                upLeft, bottomRight = self.alignVertical(
-                    alignmentType, height, upLeft, bottomRight)
+                bottomRight = (bottomRight[0], upLeft[1] + height)
+
+            upLeft, bottomRight = self.alignVertical(
+                alignmentType, _height, upLeft, bottomRight)
+
+            upLeft = (upLeft[0] + padding, upLeft[1])
+            bottomRight = (bottomRight[0] + padding, bottomRight[1])
 
         ###### LEFT ######
         if(referenceType == self.Reference.LEFT):
 
-            upLeft = (upLeft[0] - _width, upLeft[1])
-            bottomRight = (bottomRight[0] - _width, bottomRight[1])
+            upLeft = (upLeft[0], upLeft[1])
 
             if not width == None:
-                upLeft = (upLeft[0] - width, upLeft[1])
+                bottomRight = (upLeft[0] - width, bottomRight[1])
+            else:
+                bottomRight = (bottomRight[0] - _width, bottomRight[1])
 
             if not height == None:
-                upLeft, bottomRight = self.alignVertical(
-                    alignmentType, height, upLeft, bottomRight)
+                bottomRight = (bottomRight[0], upLeft[1] + height)
+
+            upLeft, bottomRight = self.alignVertical(
+                alignmentType, _height, upLeft, bottomRight)
+
+            upLeft = (upLeft[0] - padding, upLeft[1])
+            bottomRight = (bottomRight[0] - padding, bottomRight[1])
+
+        if not offX == None:
+            upLeft = (
+                upLeft[0] + offX,
+                upLeft[1]
+            )
+            bottomRight = (
+                bottomRight[0] + offX,
+                bottomRight[1]
+            )
+        if not offY == None:
+            upLeft = (
+                upLeft[0],
+                upLeft[1] + offY
+            )
+            bottomRight = (
+                bottomRight[0],
+                bottomRight[1] + offY
+            )
 
         upLeft, bottomRight = self.checkConstraint(upLeft, bottomRight)
 
         self.rectangles[newID] = {"ul": upLeft, "br": bottomRight}
+        return self.rectangles[newID]

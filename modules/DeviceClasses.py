@@ -271,8 +271,17 @@ class Commands:
     def get_obj(self):
         return self.active_commands, "list of active commands"
 
-    def remove_command(self):
-        self.active_commands.pop(0)
+    def push_one(self, command):
+        elements = list(
+            filter(lambda x: command[0] in x, self.active_commands))
+        if len(elements) > 0:
+            idx = self.active_commands.index(elements[0])
+            self.active_commands[idx] = command
+        else:
+            self.active_commands.append(command)
+
+    def remove_command(self, idx=0):
+        self.active_commands.pop(idx)
 
     def clear(self):
         self.active_commands = []

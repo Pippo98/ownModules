@@ -119,6 +119,7 @@ class terminalBrowser:
 
             if key == "a":
                 self.currentPath, lastDir = os.path.split(self.currentPath)
+                self.selectedFile = None
                 if(len(self.previousFolders) > 0):
                     self.currentFolder = self.previousFolders.pop()
                     self.currentIndex = self.list_and_sort(
@@ -185,5 +186,6 @@ class terminalBrowser:
             self.printedLines += 1
 
     def clearTerm(self, offsetLines=1):
-        print(("\033[F" + " "*150) * (self.printedLines + offsetLines))
+        print(("\x1b[2K\x1b[2A" + " "*150 + "\r\n") *
+              (self.printedLines + offsetLines), flush=True)
         self.printedLines = 0
