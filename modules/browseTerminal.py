@@ -41,12 +41,14 @@ class terminalBrowser:
         bff = os.listdir(path)
 
         dirs = sorted(list(filter(
-            lambda x: os.path.isdir(self.currentPath + "/" + x), bff)))
+            lambda x: os.path.isdir(self.currentPath + "/" + x) and not x.startswith('.'), bff)))
         dirs += sorted(list(filter(
-            lambda x: not os.path.isdir(self.currentPath + "/" + x), bff)))
+            lambda x: not os.path.isdir(self.currentPath + "/" + x) and not x.startswith('.'), bff)))
         return dirs
 
     def browse(self):
+
+        self.clearTerm()
 
         self.selected = False
         while self.selected == False:
@@ -186,6 +188,6 @@ class terminalBrowser:
             self.printedLines += 1
 
     def clearTerm(self, offsetLines=1):
-        print(("\x1b[2K\x1b[2A" + " "*150 + "\r\n") *
-              (self.printedLines + offsetLines), flush=True)
+        #print(("\x1b[2K\x1b[2A" + " "*150 + "\r\n") *(self.printedLines + offsetLines), flush=True)
+        os.system("clear")
         self.printedLines = 0

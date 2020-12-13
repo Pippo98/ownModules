@@ -2,18 +2,18 @@ class Accel_Gyro(object):
 
     type = "Accel Gyro"
 
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-    jsonList = []
-    messageList = []
-
     def __init__(self):
         self.x = 0
         self.y = 0
         self.z = 0
         self.scale = 0
+        self.jsonList = []
+        self.messageList = []
+
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
 
     def get_obj(self):
         obj = [
@@ -43,24 +43,23 @@ class Accel_Gyro(object):
 class Speed:
 
     type = "Speed"
-    l_kmh = 0
-    r_kmh = 0
-    l_rads = 0
-    r_rads = 0
-    angle0 = 0
-    angle1 = 0
-    delta = 0
-    frequency = 0
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
 
     def __init__(self):
-        pass
+        self.l_kmh = 0
+        self.r_kmh = 0
+        self.l_rads = 0
+        self.r_rads = 0
+        self.angle0 = 0
+        self.angle1 = 0
+        self.delta = 0
+        self.frequency = 0
+        self.time = 0
+        self.count = 0
+
+        self.file_ = ""
+        self.file_2 = ""
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -102,17 +101,16 @@ class Speed:
 class Steer:
 
     type = "Steer"
-    angle = 0
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
 
     def __init__(self):
-        pass
+        self.angle = 0
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -133,21 +131,20 @@ class Steer:
 class Pedals:
 
     type = "Pedals"
-    throttle1 = 0
-    throttle2 = 0
-    front = 0
-    back = 0
-    brake = 0
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
 
     def __init__(self):
-        pass
+        self.throttle1 = 0
+        self.throttle2 = 0
+        self.front = 0
+        self.back = 0
+        self.brake = 0
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -180,21 +177,20 @@ class Pedals:
 
 class ECU:
     type = "ECU"
-    errors = 0
-    warnings = 0
-    state = 0
-    map = 0
-
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
 
     def __init__(self):
-        pass
+        self.errors = 0
+        self.warnings = 0
+        self.state = 0
+        self.map = 0
+
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -223,18 +219,17 @@ class ECU:
 
 class SteeringWheel:
     type = "SteeringWheel"
-    ok = 0
-
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
 
     def __init__(self):
-        pass
+        self.ok = 0
+
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -255,18 +250,16 @@ class SteeringWheel:
 class Commands:
     type = "Commands"
 
-    active_commands = []
-
-    time = 0
-    count = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
-
     def __init__(self):
-        pass
+        self.active_commands = []
+
+        self.time = 0
+        self.count = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         return self.active_commands, "list of active commands"
@@ -297,22 +290,20 @@ class Commands:
 class Inverter:
     type = "Inverter"
 
-    temperature = 0
-    motorTemp = 0
-    torque = 0
-    speed = 0
-    state = 0
-
-    count = 0
-    time = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
-
     def __init__(self):
-        pass
+        self.temperature = 0
+        self.motorTemp = 0
+        self.torque = 0
+        self.speed = 0
+        self.state = 0
+
+        self.count = 0
+        self.time = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
@@ -346,31 +337,32 @@ class Inverter:
 class BMS:
     type = "BMS"
 
-    temperature = 0
-    voltage = 0
-    current = 0
-
-    count = 0
-    time = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
-
     def __init__(self):
-        pass
+        self.temperature = 0
+        self.voltage = 0
+        self.current = 0
+        self.power = 0
+
+        self.count = 0
+        self.time = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [
             self.temperature,
             self.voltage,
             self.current,
+            self.power
         ]
         names = [
             "temperature",
             "voltage",
             "current",
+            "power"
         ]
 
         return obj, names
@@ -381,6 +373,7 @@ class BMS:
             "temperature": self.temperature,
             "voltage": self.voltage,
             "current": self.current,
+            "power": self.power
 
         }
         return _dict
@@ -389,23 +382,21 @@ class BMS:
 class GPS:
     type = "GPS"
 
-    latitude = 0
-    longitude = 0
-    altitude = 0
-    speed = 0
-    course = 0
-    timestamp = 0
-
-    count = 0
-    time = 0
-    file_ = ""
-    file_2 = ""
-
-    jsonList = []
-    messageList = []
-
     def __init__(self):
-        pass
+        self.latitude = 0
+        self.longitude = 0
+        self.altitude = 0
+        self.speed = 0
+        self.course = 0
+        self.timestamp = 0
+
+        self.count = 0
+        self.time = 0
+        self.file_ = ""
+        self.file_2 = ""
+
+        self.jsonList = []
+        self.messageList = []
 
     def get_obj(self):
         obj = [

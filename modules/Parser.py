@@ -99,9 +99,9 @@ class Parser:
             self.a2.y /= 100
             self.a2.z /= 100
 
-            self.a2.x = round(self.a2.x, 2)
-            self.a2.y = round(self.a2.y, 2)
-            self.a2.z = round(self.a2.z, 2)
+            self.a2.x = self.a2.x
+            self.a2.y = self.a2.y
+            self.a2.z = self.a2.z
 
             self.a2.time = timestamp
             self.a2.count += 1
@@ -124,9 +124,9 @@ class Parser:
             self.g2.y /= 100
             self.g2.z /= 100
 
-            self.g2.x = round(self.g2.x, 2)
-            self.g2.y = round(self.g2.y, 2)
-            self.g2.z = round(self.g2.z, 2)
+            self.g2.x = self.g2.x
+            self.g2.y = self.g2.y
+            self.g2.z = self.g2.z
 
             self.g2.time = timestamp
             self.g2.count += 1
@@ -140,9 +140,9 @@ class Parser:
                 self.a.y = (msg[3] * 256 + msg[4])/100 - self.a.scale
                 self.a.z = (msg[5] * 256 + msg[6])/100 - self.a.scale
 
-                self.a.x = round(self.a.x, 3)
-                self.a.y = round(self.a.y, 3)
-                self.a.z = round(self.a.z, 3)
+                self.a.x = self.a.x
+                self.a.y = self.a.y
+                self.a.z = self.a.z
 
                 self.a.time = timestamp
                 self.a.count += 1
@@ -154,9 +154,9 @@ class Parser:
                 self.g.y = (msg[3] * 256 + msg[4])/10 - self.g.scale
                 self.g.z = (msg[5] * 256 + msg[6])/10 - self.g.scale
 
-                self.g.x = round(self.g.x, 3)
-                self.g.y = round(self.g.y, 3)
-                self.g.z = round(self.g.z, 3)
+                self.g.x = self.g.x
+                self.g.y = self.g.y
+                self.g.z = self.g.z
 
                 self.g.time = timestamp
                 self.g.count += 1
@@ -165,7 +165,7 @@ class Parser:
             # STEER
             if(msg[0] == 2):
                 self.steer.angle = (msg[1] * 256 + msg[2])/100
-                self.steer.angle = round(self.steer.angle, 3)
+                self.steer.angle = self.steer.angle
                 self.steer.time = timestamp
                 self.steer.count += 1
                 modifiedSensors.append(self.steer.type)
@@ -270,6 +270,7 @@ class Parser:
 
             if(msg[0] == 0x05):
                 self.bmsHV.current = (msg[1] * 256 + msg[2])/10
+                self.bmsLV.power = (msg[3]*256 + msg[4])
                 self.bmsHV.time = timestamp
                 modifiedSensors.append(self.bmsHV.type)
 
