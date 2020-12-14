@@ -68,15 +68,6 @@ class Parser:
                 self.pedals.front = (msg[2] * 256 + msg[4]) / 500
                 self.pedals.back = (msg[5] * 256 + msg[7]) / 500
 
-                # this next conversion is a correction of a wrong
-                # computation before sending the value
-
-                self.pedals.front = (
-                    (((self.pedals.front/100)*4096)+0-409.6)/3276.8) * 100
-
-                self.pedals.back = (
-                    (((self.pedals.back/100)*4096)+0-409.6)/3276.8) * 100
-
                 self.pedals.time = time.time()
                 self.pedals.count += 1
                 modifiedSensors.append(self.pedals.type)
